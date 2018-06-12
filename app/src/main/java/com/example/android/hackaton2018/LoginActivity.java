@@ -1,5 +1,6 @@
 package com.example.android.hackaton2018;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +8,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private String username;
     private TextView loginTxt;
     private Button loginBtn;
+    private ProgressDialog progressDialog;
  //   private Button chatBtn;
 
     @Override
@@ -126,6 +130,11 @@ public class LoginActivity extends AppCompatActivity {
         TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
         username = usernameWrapper.getEditText().getText().toString();
         String userToken = authenticate(username);
+        progressDialog = new ProgressDialog(new ContextThemeWrapper(LoginActivity.this, android.R.style.Theme_Holo_Light_Dialog));
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.getWindow().setGravity(Gravity.CENTER);
+        progressDialog.show();
         loginAsUser(userToken);
 
 //        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -161,6 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(List<Conversation> conversationList) {
                             if (conversationList.size() > 0) {
+                                progressDialog.dismiss();
                                 System.out.println("conv list size: " + conversationList.size());
                                 showConversationList(conversationList);
                             } else {
@@ -266,7 +276,7 @@ public class LoginActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                loginTxt.setText("Logged in as " + user.getName() + "\nStart chatting!");
+                //loginTxt.setText("Logged in as " + user.getName() + "\nStart chatting!");
             }
         });
     }

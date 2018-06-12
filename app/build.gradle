@@ -26,6 +26,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.nexmo:conversation:0.18.0'
+    implementation 'com.android.support:design:22.2.0'
+    implementation 'com.android.support:appcompat-v7:22.2.0'
 }
 
 configurations.all {

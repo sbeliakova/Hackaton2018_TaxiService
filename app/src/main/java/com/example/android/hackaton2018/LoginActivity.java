@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.design.widget.TextInputLayout;
 
 import com.nexmo.sdk.conversation.client.Conversation;
 import com.nexmo.sdk.conversation.client.ConversationClient;
@@ -34,6 +35,12 @@ public class LoginActivity extends AppCompatActivity {
 
         ConversationClientApplication application = (ConversationClientApplication) getApplication();
         conversationClient = application.getConversationClient();
+
+        final TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
+        final TextInputLayout passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
+
+        usernameWrapper.setHint("Username");
+        passwordWrapper.setHint("Password");
 
         loginTxt = (TextView) findViewById(R.id.login_text);
         loginBtn = (Button) findViewById(R.id.login);

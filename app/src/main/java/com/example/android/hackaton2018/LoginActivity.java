@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private String USER_JWT_SECOND_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg3OTcxODksImp0aSI6IjY5OTlmNDcwLTZlMjYtMTFlOC05NjkyLWQxYTM2YjY5OGFhMCIsInN1YiI6ImphbWllIiwiZXhwIjoiMTUyODg4MzU4OCIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e319fSwiYXBwbGljYXRpb25faWQiOiJmMjQxOGJjMi1iMzNhLTRmNDItODhhMi04ODU5ODU3NjhhMTAifQ.d1INXg8q_4MhNR8GMhwo_d_5HoBNuO7fL4THTQWmAFoUrB6_eNzj8jlju3LTM1AUkrxYyOQCLTz9a1v4MKmgvRPiEWYtwEIlFaYyktMTZfiXap6Hhf0WR3OjYJT1_DI1U9DAaIfwe5oXqHq_IB-CDrhy_Qkob-MdCQaS0LJaMzSFlDY0Kw2iX8u2e74QWXKAEf0kCyRCNtrRidaUk-fqKaO1DEajQDeRCmo-T75zBNttzlyMRryDdfv3fLIChAepM9I1fSp8n9fQL2jpY6YrECfHVMCYy_H1_aaVhiISULpXBxlKW13S3gVC__Y92i4piiZfksD76WjMrqy6u746bQ";
 
     private ConversationClient conversationClient;
+    private String username;
     private TextView loginTxt;
     private Button loginBtn;
  //   private Button chatBtn;
@@ -122,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 //                    }
 //                });
         TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
-        String username = usernameWrapper.getEditText().getText().toString();
+        username = usernameWrapper.getEditText().getText().toString();
         String userToken = authenticate(username);
         loginAsUser(userToken);
 
@@ -204,6 +205,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goToConversation(final Conversation conversation) {
         Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
         intent.putExtra("CONVERSATION-ID", conversation.getConversationId());
+        intent.putExtra("USERNAME", username);
         startActivity(intent);
     }
 

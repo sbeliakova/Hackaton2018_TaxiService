@@ -43,17 +43,20 @@ public class ChatActivity extends AppCompatActivity {
         chatTxt = (TextView) findViewById(R.id.chat_txt);
         msgEditTxt = (EditText) findViewById(R.id.msg_edit_txt);
         sendMsgBtn = (Button) findViewById(R.id.send_msg_btn);
+
+        Intent intent = getIntent();
+        final String username = intent.getStringExtra("USERNAME");
+        System.out.println("username: " + username);
+
         sendMsgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage();
+                sendMessage(username);
             }
         });
 
         ConversationClientApplication application = (ConversationClientApplication) getApplication();
         conversationClient = application.getConversationClient();
-
-        Intent intent = getIntent();
         String conversationId = intent.getStringExtra("CONVERSATION-ID");
         System.out.println("conversationId: " + conversationId);
         conversation = conversationClient.getConversation(conversationId);
@@ -71,8 +74,9 @@ public class ChatActivity extends AppCompatActivity {
         subscriptions.unsubscribeAll();
     }
 
-    private void sendMessage() {
-        conversation.sendText(msgEditTxt.getText().toString(), new RequestHandler<Event>() {
+    private void sendMessage(String username) {
+        conversation.sendText(username + ": " + msgEditTxt.getText().toString(),
+                new RequestHandler<Event>() {
             @Override
             public void onSuccess(Event event) {
                 if (event.getType().equals(EventType.TEXT)) {

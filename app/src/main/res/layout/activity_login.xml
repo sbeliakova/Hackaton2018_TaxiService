@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Welcome to Awesome Chat. Login to continue" />
+        android:text="Welcome to Awesome Chatter. Login to continue" />
 
     <LinearLayout
         android:id="@+id/login_layout"

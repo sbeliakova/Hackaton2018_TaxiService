@@ -18,6 +18,7 @@ import android.support.design.widget.TextInputLayout;
 
 import com.nexmo.sdk.conversation.client.Conversation;
 import com.nexmo.sdk.conversation.client.ConversationClient;
+import com.nexmo.sdk.conversation.client.Event;
 import com.nexmo.sdk.conversation.client.Member;
 import com.nexmo.sdk.conversation.client.User;
 import com.nexmo.sdk.conversation.client.event.NexmoAPIError;
@@ -210,25 +211,38 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
     private void goToConversation(final Conversation conversation) {
-        conversation.updateEvents(null, null, new RequestHandler<Conversation>() {
+        System.out.println("conversation " + conversation.getEvents().toString());
+        conversation.sendText("Hey there!", new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
-                logAndShow("Error Updating Conversation: " + apiError.getMessage());
+
             }
 
             @Override
-            public void onSuccess(final Conversation result) {
-                runOnUiThread(new Runnable() {
+            public void onSuccess(Event result) {
+                conversation.updateEvents(null, null, new RequestHandler<Conversation>() {
                     @Override
-                    public void run() {
-                        Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
-                        intent.putExtra("CONVERSATION-ID", conversation.getConversationId());
-                        intent.putExtra("USERNAME", username);
-                        startActivity(intent);
+                    public void onError(NexmoAPIError apiError) {
+                        logAndShow("Error Updating Conversation: " + apiError.getMessage());
+                        System.out.println("Error Updating Conversation: " + apiError.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(final Conversation result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+                                intent.putExtra("CONVERSATION-ID", conversation.getConversationId());
+                                intent.putExtra("USERNAME", username);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 });
             }
         });
+
     }
 
     private void showLoginSuccessAndAddInvitationListener(final User user) {

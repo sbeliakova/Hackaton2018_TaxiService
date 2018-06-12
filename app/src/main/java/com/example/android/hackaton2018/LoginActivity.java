@@ -16,7 +16,7 @@ import com.nexmo.sdk.conversation.client.event.RequestHandler;
 
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = LoginActivity.class.getSimpleName();
-    private String CONVERSATION_ID;
+    private String CONVERSATION_ID = "CON-76f7d1da-d99c-41d2-b77b-2ace6230e20f";
     private String USER_JWT;
 
     private ConversationClient conversationClient;

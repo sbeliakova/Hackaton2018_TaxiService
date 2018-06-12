@@ -18,7 +18,7 @@ public class ConversationClientApplication extends Application {
         this.conversationClient = new ConversationClient.ConversationClientBuilder().context(this).build();
     }
 
-    public ConversationClient getConversationClientApp() {
+    public ConversationClient getConversationClient() {
         return this.conversationClient;
     }
 }

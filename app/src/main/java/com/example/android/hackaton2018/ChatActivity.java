@@ -55,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String conversationId = intent.getStringExtra("CONVERSATION-ID");
+        System.out.println("conversationId: " + conversationId);
         conversation = conversationClient.getConversation(conversationId);
     }
 

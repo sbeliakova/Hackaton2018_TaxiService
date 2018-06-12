@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import com.nexmo.sdk.conversation.client.Conversation;
 import com.nexmo.sdk.conversation.client.ConversationClient;
 import com.nexmo.sdk.conversation.client.Event;
+import com.nexmo.sdk.conversation.client.Member;
 import com.nexmo.sdk.conversation.client.Text;
 import com.nexmo.sdk.conversation.client.audio.AppRTCAudioManager;
 import com.nexmo.sdk.conversation.client.audio.AudioCallEventListener;
@@ -101,6 +104,60 @@ public class ChatActivity extends AppCompatActivity {
                 recyclerView.smoothScrollToPosition(chatAdapter.getItemCount());
             }
         }).addTo(subscriptions);
+
+        chatBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //intentionally left blank
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //intentionally left blank
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    sendTypeIndicator(Member.TYPING_INDICATOR.ON);
+                } else {
+                    sendTypeIndicator(Member.TYPING_INDICATOR.OFF);
+                }
+            }
+        });
+    }
+
+    private void sendTypeIndicator(Member.TYPING_INDICATOR typingIndicator) {
+        switch (typingIndicator){
+            case ON: {
+                conversation.startTyping(new RequestHandler<Member.TYPING_INDICATOR>() {
+                    @Override
+                    public void onSuccess(Member.TYPING_INDICATOR typingIndicator) {
+                        //intentionally left blank
+                    }
+
+                    @Override
+                    public void onError(NexmoAPIError apiError) {
+                        logAndShow("Error start typing: " + apiError.getMessage());
+                    }
+                });
+                break;
+            }
+            case OFF: {
+                conversation.stopTyping(new RequestHandler<Member.TYPING_INDICATOR>() {
+                    @Override
+                    public void onSuccess(Member.TYPING_INDICATOR typingIndicator) {
+                        //intentionally left blank
+                    }
+
+                    @Override
+                    public void onError(NexmoAPIError apiError) {
+                        logAndShow("Error stop typing: " + apiError.getMessage());
+                    }
+                });
+                break;
+            }
+        }
     }
 
     @Override

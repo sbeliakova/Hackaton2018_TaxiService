@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
@@ -44,12 +45,15 @@ public class LoginActivity extends AppCompatActivity {
     private TextView loginTxt;
     private Button loginBtn;
     private ProgressDialog progressDialog;
+    ActionBar actionBar;
  //   private Button chatBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        actionBar = getSupportActionBar();
+        actionBar.hide();
 
         ConversationClientApplication application = (ConversationClientApplication) getApplication();
         conversationClient = application.getConversationClient();
@@ -60,9 +64,8 @@ public class LoginActivity extends AppCompatActivity {
         usernameWrapper.setHint("Username");
         passwordWrapper.setHint("Password");
 
-        loginTxt = (TextView) findViewById(R.id.login_text);
+       // loginTxt = (TextView) findViewById(R.id.login_text);
         loginBtn = (Button) findViewById(R.id.login);
-   //     chatBtn = (Button) findViewById(R.id.chat);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,66 +73,17 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-//        chatBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retrieveConversations();
-//            }
-//        });
     }
 
     private String authenticate(String username) {
         return username.toLowerCase().equals("svetlana") ? USER_JWT_FIRST_USER : USER_JWT_SECOND_USER;
     }
 
-//    private void login() {
-//        loginTxt.setText("Logging in...");
-//
-//        String userToken = authenticate();
-//        conversationClient.login(userToken, new RequestHandler<User>() {
-//            @Override
-//            public void onSuccess(User user) {
-//                showLoginSuccess(user);
-//
-//                conversationClient.synchronisationEvent().add(new ResultListener<SynchronisingState.STATE>() {
-//                    @Override
-//                    public void onSuccess(SynchronisingState.STATE result) {
-//                      if ( result == SynchronisingState.STATE.MEMBERS) {
-//                          logAndShow("Synchronization done");
-//                          runOnUiThread(new Runnable() {
-//                              @Override
-//                              public void run() {
-//                                  chatBtn.setVisibility(View.VISIBLE);
-//                              }
-//                          });
-//                      }
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onError(NexmoAPIError apiError) {
-//                logAndShow("Login Error: " + apiError.getMessage());
-//            }
-//        });
-//    }
-
     private void login() {
-//        final EditText input = new EditText(LoginActivity.this);
-//        final AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this)
-//                .setTitle("Enter your username")
-//                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        String userToken = authenticate(input.getText().toString());
-//                        System.out.println("conversationList size in the login function: " +
-//                                conversationClient.getConversationList().size());
-//                        loginAsUser(userToken);
-//                    }
-//                });
         TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
         username = usernameWrapper.getEditText().getText().toString();
         String userToken = authenticate(username);
+
         progressDialog = new ProgressDialog(new ContextThemeWrapper(LoginActivity.this, android.R.style.Theme_Holo_Light_Dialog));
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -137,12 +91,6 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
         loginAsUser(userToken);
 
-//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT);
-//        input.setLayoutParams(lp);
-//        dialog.setView(input);
-//        dialog.show();
     }
 
     private void loginAsUser(String token) {
@@ -213,13 +161,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-//    private void goToConversation(final Conversation conversation) {
-//        Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
-//        intent.putExtra("CONVERSATION-ID", conversation.getConversationId());
-//        intent.putExtra("USERNAME", username);
-//        startActivity(intent);
-//    }
-
     private void goToConversation(final Conversation conversation) {
         System.out.println("conversation " + conversation.getEvents().toString());
         conversation.sendText("Hey there!", new RequestHandler<Event>() {
@@ -282,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void logAndShow(final String message) {
-        Log.d(TAG, message);
+       // Log.d(TAG, message);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

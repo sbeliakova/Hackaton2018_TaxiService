@@ -45,15 +45,14 @@ public class LoginActivity extends AppCompatActivity {
     private TextView loginTxt;
     private Button loginBtn;
     private ProgressDialog progressDialog;
-    ActionBar actionBar;
- //   private Button chatBtn;
+    //ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+//        actionBar = getSupportActionBar();
+//        actionBar.hide();
 
         ConversationClientApplication application = (ConversationClientApplication) getApplication();
         conversationClient = application.getConversationClient();

@@ -6,6 +6,6 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar" />
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light" />
 
 </resources>

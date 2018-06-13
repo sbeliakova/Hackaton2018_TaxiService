@@ -46,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText chatBox;
     private ImageButton sendBtn;
     private TextView typingNotificationTxt;
+    private TextView chatTxt;
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
 
@@ -66,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
         System.out.println("conversationId: " + conversationId);
         conversation = conversationClient.getConversation(conversationId);
 
+        chatTxt = (TextView) findViewById(R.id.chat_txt);
         chatBox = (EditText) findViewById(R.id.chat_box);
         sendBtn = (ImageButton) findViewById(R.id.send_btn);
         typingNotificationTxt = (TextView) findViewById(R.id.typing_notification);
@@ -92,8 +94,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-      //  addListener();
-        attachListeners();
+        //attachListeners();
+        addListener();
     }
 
     private void attachListeners() {
@@ -184,7 +186,7 @@ public class ChatActivity extends AppCompatActivity {
 //    }
 
     private void sendMessage(String username) {
-        conversation.sendText(username + chatBox.getText().toString(), new RequestHandler<Event>() {
+        conversation.sendText(username + ": " + chatBox.getText().toString(), new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
                 logAndShow("Error sending message: " + apiError.getMessage());
@@ -203,23 +205,23 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-//    private void addListener() {
-//        conversation.messageEvent().add(new ResultListener<Event>() {
-//            @Override
-//            public void onSuccess(Event message) {
-//                showMessage(message);
-//            }
-//        }).addTo(subscriptions);
-//    }
+    private void addListener() {
+        conversation.messageEvent().add(new ResultListener<Event>() {
+            @Override
+            public void onSuccess(Event message) {
+                showMessage(message);
+            }
+        }).addTo(subscriptions);
+    }
 
-//    private void showMessage(final Event message) {
-//        if (message.getType().equals(EventType.TEXT)) {
-//            Text text = (Text) message;
-//            msgEditTxt.setText(null);
-//            final String prevText = chatTxt.getText().toString();
-//            chatTxt.setText(prevText + "\n" + text.getText());
-//        }
-//    }
+    private void showMessage(final Event message) {
+        if (message.getType().equals(EventType.TEXT)) {
+            Text text = (Text) message;
+            chatBox.setText(null);
+            final String prevText = chatTxt.getText().toString();
+            chatTxt.setText(prevText + "\n" + text.getText());
+        }
+    }
 
     private void logAndShow(final String message) {
         Log.d(TAG, message);

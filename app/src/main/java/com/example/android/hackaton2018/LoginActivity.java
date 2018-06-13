@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private String authenticate(String username) {
+        System.out.println("username inserted: " + username);
         return username.toLowerCase().equals("svetlana") ? USER_JWT_FIRST_USER : USER_JWT_SECOND_USER;
     }
 
@@ -82,21 +83,29 @@ public class LoginActivity extends AppCompatActivity {
         TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
         username = usernameWrapper.getEditText().getText().toString();
         String userToken = authenticate(username);
+        System.out.println("userToken: " + userToken);
 
         progressDialog = new ProgressDialog(new ContextThemeWrapper(LoginActivity.this, android.R.style.Theme_Holo_Light_Dialog));
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
+        System.out.println("authentificating");
         progressDialog.getWindow().setGravity(Gravity.CENTER);
         progressDialog.show();
+        System.out.println("loginAsUser starting...");
         loginAsUser(userToken);
 
     }
 
     private void loginAsUser(String token) {
+        System.out.println("loginAsUser started...");
+        System.out.println("token: " + token);
+        System.out.println("login starting...");
         conversationClient.login(token, new RequestHandler<User>() {
             @Override
             public void onSuccess(User user) {
+                System.out.println("login success...");
                 showLoginSuccessAndAddInvitationListener(user);
+                System.out.println("retrieving the conversation");
                 retrieveConversations();
             }
 
@@ -108,14 +117,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void retrieveConversations() {
+        System.out.println("retrieve conversations starting...");
         conversationClient.synchronisationEvent().add(new ResultListener<SynchronisingState.STATE>() {
             @Override
             public void onSuccess(SynchronisingState.STATE result) {
+                System.out.println("onSuccess state when retrieving conversation...");
                 if (result == SynchronisingState.STATE.MEMBERS) {
-                    System.out.println(SynchronisingState.STATE.MEMBERS.toString());
+                    System.out.println("result == SynchronisingState.STATE.MEMBERS");
                     conversationClient.getConversations(new RequestHandler<List<Conversation>>() {
                         @Override
                         public void onSuccess(List<Conversation> conversationList) {
+                            System.out.println("conversationList: " + conversationList.toString());
                             if (conversationList.size() > 0) {
                                 progressDialog.dismiss();
                                 System.out.println("conv list size: " + conversationList.size());
@@ -165,7 +177,8 @@ public class LoginActivity extends AppCompatActivity {
         conversation.sendText("Hey there!", new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
-
+                logAndShow("Error going to the Conversation: " + apiError.getMessage());
+                System.out.println("Error going to the Conversation: " + apiError.toString());
             }
 
             @Override

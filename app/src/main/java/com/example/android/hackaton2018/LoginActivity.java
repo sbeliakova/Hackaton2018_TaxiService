@@ -39,22 +39,23 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = LoginActivity.class.getSimpleName();
     private String CONVERSATION_ID = "CON-76f7d1da-d99c-41d2-b77b-2ace6230e20f";
-    private String USER_JWT_FIRST_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg4ODM3MTIsImp0aSI6ImRkYTE4N2IwLTZlZWYtMTFlOC05MTNjLTRiM2IzYzVlYTNmYiIsInN1YiI6InN2ZXRsYW5hIiwiZXhwIjoiMTUyODk3MDExMiIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e319fSwiYXBwbGljYXRpb25faWQiOiJmMjQxOGJjMi1iMzNhLTRmNDItODhhMi04ODU5ODU3NjhhMTAifQ.oo5PS1GbGVDhnwLnh1NqeAT4fecFIKrRF_6eC3GMooBe65fCrtTJxw8B-suSogV0VnVTlbRDlCn4QVYaK0ac_a4h1J2lq5LyLH2Lm7iC-CSwqKoIr0Rlm7AUGVYVYbztp8-6jz7P5EC1vlScbRNgD6IO-yrFoEdGkuNLRU3zcU2uI4AF5KC2ZX4MOHIvWT4KBTec2yr8u6IkzFi1kXYObhf9JyNnyAbIQ1APP86ikI2a8p0q4rkVS9A9zyUkTozmf_aSu-cjEGKQlBcPxmkZdo7e2ocuwAgjcbGrP427tMFXE0YvAvJVbZSluQ0mX54AnMd4qS8L72jl6sDzCaIhkw";
-    private String USER_JWT_SECOND_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg4ODM3MTAsImp0aSI6ImRiZTU1OGMwLTZlZWYtMTFlOC05MGViLTg3YzY0NjNmZDg5OCIsInN1YiI6ImphbWllIiwiZXhwIjoiMTUyODk3MDEwOSIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e319fSwiYXBwbGljYXRpb25faWQiOiJmMjQxOGJjMi1iMzNhLTRmNDItODhhMi04ODU5ODU3NjhhMTAifQ.H7ZjcNh9KGHMn4TQptSjZERLTDVzpUdFoOzWAtLJIvwWUs03_Vvqci5hbP8v2AlHhtFNapLi3-VItFwKdvo_ocr_xYg3BqDbTT-8Bjif_rcLXqQpgdl8k01KUX0luGKJA3fCgIrT2YlhM_YmxhFuqyZcchDU_svvgQA36xRHVtg1brI7DdfGVI1yXLVF4DtGWvMWxtc17woxLdl7U5NsbGsDOItlgNR-VoEITIIR5aswHKPZijZJPTF_s_mUtDBNG9CuQnZTAEZx_Voz4OLyE9m60JsFCLp0rvCY-WfEiUgv6i2ww1s4TEYkoNIk8toTNL7xG-T9NnRX9T9-nQ1Z5g";
+    private String USER_JWT_FIRST_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg5MjIxNzMsImp0aSI6IjY5YzlmOGUwLTZmNDktMTFlOC1hY2ZjLTAxNzE0NDVlMGJkMSIsInN1YiI6InN2ZXRsYW5hIiwiZXhwIjoiMTUyOTAwODU3MiIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e30sIi92MS9kZXZpY2VzLyoqIjp7fSwiL3YxL2ltYWdlLyoqIjp7fSwiL3YzL21lZGlhLyoqIjp7fSwiL3YxL2FwcGxpY2F0aW9ucy8qKiI6e30sIi92MS9wdXNoLyoqIjp7fSwiL3YxL2tub2NraW5nLyoqIjp7fX19LCJhcHBsaWNhdGlvbl9pZCI6ImYyNDE4YmMyLWIzM2EtNGY0Mi04OGEyLTg4NTk4NTc2OGExMCJ9.puCihz5_7wnWfsZhy1B3zSOtnZ-V081VR6i0j8fzKd0mBGOV2uvUm5jRe14nyb_x9IAiRKq9_O9gl7HdJyUbldFHWZ989saeRS6MQcpbtEeo7nKfmSVmBlQC4SbcJuV6JHYj-waJqPuUBDXJsxzRNBQqaKPlwwlktKpRR_k9a-zJbeI-4e2WJFT07AgwmRJcmCNLvYYP6LlSLsO-s0WFZqRj0lrq5CG39eLT9jsylo70t888CQyXyAYSjnPdvRWAKIOFU2rrXBH8to0NYGcWx3VVvO4ReRErQc21x8SOomF9BLvz1fhX8bNwpCXHzYqbKjoodF-T9522DhudiP9inQ";
+    private String USER_JWT_SECOND_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg5MjIyMDEsImp0aSI6IjdhNTM1ZWUwLTZmNDktMTFlOC05YzdjLTU3NzcyNTBhOTk2YyIsInN1YiI6ImphbWllIiwiZXhwIjoiMTUyOTAwODYwMCIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e30sIi92MS9kZXZpY2VzLyoqIjp7fSwiL3YxL2ltYWdlLyoqIjp7fSwiL3YzL21lZGlhLyoqIjp7fSwiL3YxL2FwcGxpY2F0aW9ucy8qKiI6e30sIi92MS9wdXNoLyoqIjp7fSwiL3YxL2tub2NraW5nLyoqIjp7fX19LCJhcHBsaWNhdGlvbl9pZCI6ImYyNDE4YmMyLWIzM2EtNGY0Mi04OGEyLTg4NTk4NTc2OGExMCJ9.tRiUKMho2Ttg90NJVmYDH243c2vvqgzkecU3kC-Wu9CAVXTH3PS4lXOkaDq3Gx6X8Noqb_yOSocuZGV6vVPWU-NGpgWnpwLa_NztWx-ZGxSNKm7sEori81YVmuF_5mwCfAb50pvAM2JB4QmU4XryiQIs4lKRSqjo0Yq1cfrzeuFQkdJg94SN19gQthSGy52hyslTJ3PMF0hDjjvOXjMPHDea-FiiSD-oWaGjjgcuy7bxPSJikJTiMx_uL8MnfMiRPzDiOo2ROzhNcgzkywW734Q_d5X7uZqC6hcZ9cby_wrFOMD-8lYgKOx7njGVs4WIxmzTmVRFQHU5zlO_tHAIsA";
+    private String SUPPORT_PSTN = "79091659491";
 
     private ConversationClient conversationClient;
     private String username;
     private TextView loginTxt;
     private Button loginBtn;
     private ProgressDialog progressDialog;
-    //ActionBar actionBar;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        actionBar = getSupportActionBar();
-//        actionBar.hide();
+        actionBar = getSupportActionBar();
+        actionBar.hide();
 
         ConversationClientApplication application = (ConversationClientApplication) getApplication();
         conversationClient = application.getConversationClient();
@@ -204,6 +205,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
                                 intent.putExtra("CONVERSATION-ID", conversation.getConversationId());
                                 intent.putExtra("USERNAME", username);
+                                intent.putExtra("SUPPORT_PSTN", SUPPORT_PSTN);
                                 startActivity(intent);
                             }
                         });

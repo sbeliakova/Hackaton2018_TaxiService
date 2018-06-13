@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+
+import com.nexmo.sdk.conversation.client.Call;
 import com.nexmo.sdk.conversation.client.SeenReceipt;
 import com.nexmo.sdk.conversation.client.event.container.Receipt;
 import android.text.Editable;
@@ -66,6 +68,8 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
 
     private ConversationClient conversationClient;
+    private String supportPstn;
+    private Call currentCall;
     private Conversation conversation;
     private SubscriptionList subscriptions = new SubscriptionList();
 
@@ -82,6 +86,8 @@ public class ChatActivity extends AppCompatActivity {
         String conversationId = intent.getStringExtra("CONVERSATION-ID");
         System.out.println("conversationId: " + conversationId);
         conversation = conversationClient.getConversation(conversationId);
+
+        supportPstn = intent.getStringExtra("SUPPORT_PSTN");
 
         chatTxt = (TextView) findViewById(R.id.chat_txt);
         chatBox = (EditText) findViewById(R.id.chat_box);
@@ -215,23 +221,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
         subscriptions.unsubscribeAll();
     }
-//
-//    private void sendMessage(String username) {
-//        conversation.sendText(username + ": " + chatBox.getText().toString(),
-//                new RequestHandler<Event>() {
-//            @Override
-//            public void onSuccess(Event event) {
-//                if (event.getType().equals(EventType.TEXT)) {
-//                    Log.d(TAG, "onSent: " + ((Text) event).getText());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(NexmoAPIError apiError) {
-//                logAndShow("Error sending message: " + apiError.getMessage());
-//            }
-//        });
-//    }
+
 
     private void sendMessage(String username) {
         System.out.println("starting sendMessage...");
@@ -287,9 +277,46 @@ public class ChatActivity extends AppCompatActivity {
                 //TODO: implement
                 requestAudio();
                 return true;
+            case R.id.outbound_pstn:
+                System.out.println("calling the PSTN...");
+                callPhone();
+                System.out.println("callPhone function called");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void callPhone() {
+        System.out.println("callPhone");
+        System.out.println("supportPstn: " + supportPstn);
+        conversationClient.callPhone(supportPstn, new RequestHandler<Call>() {
+            @Override
+            public void onSuccess(Call result) {
+                System.out.println("callPhone OnSuccess");
+                currentCall = result;
+                System.out.println("currentCall: " + currentCall.toString());
+
+                switch (result.getCallState()) {
+                    case STARTED:
+                        logAndShow("PSTN call started");
+                    case RINGING:
+                        logAndShow("PSTN call ringing");
+                    case ANSWERED:
+                        logAndShow("PSTN call answered");
+                    default:
+                        logAndShow("Error attaching call listener");
+                        break;
+                }
+            }
+
+            @Override
+            public void onError(NexmoAPIError apiError) {
+                logAndShow("Cannot initiate PSTN call: " + apiError.getMessage());
+            }
+        });
+
+
     }
 
     private void requestAudio() {

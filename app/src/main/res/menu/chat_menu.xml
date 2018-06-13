@@ -5,4 +5,10 @@
         android:title="Audio"
         android:icon="@drawable/logo"
         app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/outbound_pstn"
+        android:title="OutboundPSTN"
+        android:icon="@drawable/ic_navigation_black_24dp"
+        app:showAsAction="ifRoom"/>
+
 </menu>

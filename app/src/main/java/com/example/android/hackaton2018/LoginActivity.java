@@ -30,6 +30,8 @@ import com.nexmo.sdk.conversation.client.event.RequestHandler;
 import com.nexmo.sdk.conversation.client.event.ResultListener;
 import com.nexmo.sdk.conversation.client.event.container.Invitation;
 import com.nexmo.sdk.conversation.client.event.container.SynchronisingState;
+import com.nexmo.sdk.conversation.client.event.network.NetworkState;
+import com.nexmo.sdk.conversation.client.event.network.NetworkingStateListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +102,27 @@ public class LoginActivity extends AppCompatActivity {
         System.out.println("loginAsUser started...");
         System.out.println("token: " + token);
         System.out.println("login starting...");
+
+        conversationClient.synchronisationEvent().add(new ResultListener<SynchronisingState.STATE>() {
+            @Override
+            public void onSuccess(SynchronisingState.STATE result) {
+                System.out.println("onSuccess state when retrieving conversation...");
+                if (result == SynchronisingState.STATE.MEMBERS) {
+                    System.out.println("result == SynchronisingState.STATE.MEMBERS");
+
+                    List<Conversation> conversationList = conversationClient.getConversationList();
+                    System.out.println("conversationList: " + conversationList.toString());
+                    if (conversationList.size() > 0) {
+                        progressDialog.dismiss();
+                        System.out.println("conv list size: " + conversationList.size());
+                        showConversationList(conversationList);
+                    } else {
+                        logAndShow("You are not a member of any conversations");
+                    }
+                }
+            }
+        });
+
         conversationClient.login(token, new RequestHandler<User>() {
             @Override
             public void onSuccess(User user) {
@@ -116,37 +139,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     private void retrieveConversations() {
         System.out.println("retrieve conversations starting...");
-        conversationClient.synchronisationEvent().add(new ResultListener<SynchronisingState.STATE>() {
-            @Override
-            public void onSuccess(SynchronisingState.STATE result) {
-                System.out.println("onSuccess state when retrieving conversation...");
-                if (result == SynchronisingState.STATE.MEMBERS) {
-                    System.out.println("result == SynchronisingState.STATE.MEMBERS");
-                    conversationClient.getConversations(new RequestHandler<List<Conversation>>() {
-                        @Override
-                        public void onSuccess(List<Conversation> conversationList) {
-                            System.out.println("conversationList: " + conversationList.toString());
-                            if (conversationList.size() > 0) {
-                                progressDialog.dismiss();
-                                System.out.println("conv list size: " + conversationList.size());
-                                showConversationList(conversationList);
-                            } else {
-                                logAndShow("You are not a member of any conversations");
-                            }
-                        }
 
-                        @Override
-                        public void onError(NexmoAPIError apiError) {
-                            logAndShow("Error listing conversations: " + apiError.getMessage());
-                        }
-                    });
-                }
+        conversationClient.listenToConnectionEvents(new NetworkingStateListener() {
+            @Override
+            public void onNetworkingState(NetworkState networkingState) {
+                System.out.println("network state " + networkingState.toString());
             }
         });
-
     }
+
 
 
     private void showConversationList(final List<Conversation> conversationList) {
@@ -161,6 +165,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         goToConversation(conversationList.get(which));
+
+                        dialog.dismiss();
                     }
                 });
 

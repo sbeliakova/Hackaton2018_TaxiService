@@ -33,7 +33,9 @@ import com.nexmo.sdk.conversation.client.event.container.SynchronisingState;
 import com.nexmo.sdk.conversation.client.event.network.NetworkState;
 import com.nexmo.sdk.conversation.client.event.network.NetworkingStateListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
@@ -61,10 +63,8 @@ public class LoginActivity extends AppCompatActivity {
         conversationClient = application.getConversationClient();
 
         final TextInputLayout usernameWrapper = (TextInputLayout) findViewById(R.id.usernameWrapper);
-        final TextInputLayout passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
 
         usernameWrapper.setHint("Username");
-        passwordWrapper.setHint("Password");
 
        // loginTxt = (TextView) findViewById(R.id.login_text);
         loginBtn = (Button) findViewById(R.id.login);
@@ -181,7 +181,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToConversation(final Conversation conversation) {
         System.out.println("conversation " + conversation.getEvents().toString());
-        conversation.sendText("Hey there! You can chat now.", new RequestHandler<Event>() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        conversation.sendText("logged in, current time is: " + sdf.format(cal.getTime()),
+                new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
                 logAndShow("Error going to the Conversation: " + apiError.getMessage());

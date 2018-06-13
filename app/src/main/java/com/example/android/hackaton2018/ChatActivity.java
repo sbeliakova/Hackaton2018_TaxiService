@@ -6,6 +6,7 @@ package com.example.android.hackaton2018;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,7 +74,6 @@ public class ChatActivity extends AppCompatActivity {
     private Conversation conversation;
     private SubscriptionList subscriptions = new SubscriptionList();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("onClickListener reacts and sending message");
                 System.out.println("username used: " + username);
-                sendMessage(username);
+                sendMessage();
             }
         });
 
@@ -223,9 +223,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    private void sendMessage(String username) {
+    private void sendMessage() {
         System.out.println("starting sendMessage...");
-        conversation.sendText(username + ": " + chatBox.getText().toString(), new RequestHandler<Event>() {
+        conversation.sendText(chatBox.getText().toString(), new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
                 logAndShow("Error sending message: " + apiError.getMessage());

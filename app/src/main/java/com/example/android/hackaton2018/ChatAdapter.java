@@ -4,30 +4,26 @@ package com.example.android.hackaton2018;
  * Created by sbeliakova on 12/06/2018.
  */
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.nexmo.sdk.conversation.client.Conversation;
+import com.nexmo.sdk.conversation.client.Event;
+import com.nexmo.sdk.conversation.client.Member;
 import com.nexmo.sdk.conversation.client.SeenReceipt;
+import com.nexmo.sdk.conversation.client.Text;
+import com.nexmo.sdk.conversation.client.event.EventType;
+import com.nexmo.sdk.conversation.client.event.NexmoAPIError;
+import com.nexmo.sdk.conversation.client.event.RequestHandler;
 
-        import android.content.Context;
-        import android.support.v7.widget.RecyclerView;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-
-        import com.nexmo.sdk.conversation.client.Conversation;
-        import com.nexmo.sdk.conversation.client.Event;
-        import com.nexmo.sdk.conversation.client.Member;
-        import com.nexmo.sdk.conversation.client.SeenReceipt;
-        import com.nexmo.sdk.conversation.client.Text;
-        import com.nexmo.sdk.conversation.client.event.EventType;
-        import com.nexmo.sdk.conversation.client.event.NexmoAPIError;
-        import com.nexmo.sdk.conversation.client.event.RequestHandler;
-
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 

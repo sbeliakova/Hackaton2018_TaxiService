@@ -79,11 +79,12 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         final String username = intent.getStringExtra("USERNAME");
-        System.out.println("username: " + username);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("onClickListener reacts and sending message");
+                System.out.println("username used: " + username);
                 sendMessage(username);
             }
         });
@@ -94,8 +95,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //attachListeners();
-        addListener();
+        attachListeners();
+       // addListener();
     }
 
     private void attachListeners() {
@@ -167,7 +168,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
         subscriptions.unsubscribeAll();
     }
-
+//
 //    private void sendMessage(String username) {
 //        conversation.sendText(username + ": " + chatBox.getText().toString(),
 //                new RequestHandler<Event>() {
@@ -186,6 +187,7 @@ public class ChatActivity extends AppCompatActivity {
 //    }
 
     private void sendMessage(String username) {
+        System.out.println("starting sendMessage...");
         conversation.sendText(username + ": " + chatBox.getText().toString(), new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
@@ -194,6 +196,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Event result) {
+                System.out.println("onSuccess");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -228,84 +231,5 @@ public class ChatActivity extends AppCompatActivity {
         Toast.makeText(ChatActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void requestAudio() {
-        if (ContextCompat.checkSelfPermission(ChatActivity.this, RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            //TODO: implement
-            toggleAudio();
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, RECORD_AUDIO)) {
-                logAndShow("Need permissions granted for Audio to work");
-            } else {
-                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
-            }
-        }
-    }
-
-    private void toggleAudio() {
-        if(AUDIO_ENABLED) {
-            conversation.audio().disable(new RequestHandler<Void>() {
-                @Override
-                public void onError(NexmoAPIError apiError) {
-                    logAndShow(apiError.getMessage());
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    AUDIO_ENABLED = false;
-                    logAndShow("Audio is disabled");
-                }
-            });
-        } else {
-            conversation.audio().enable(new AudioCallEventListener() {
-                @Override
-                public void onRinging() {
-                    logAndShow("Ringing");
-                }
-
-                @Override
-                public void onCallConnected() {
-                    logAndShow("Connected");
-                    AUDIO_ENABLED = true;
-                }
-
-                @Override
-                public void onCallEnded() {
-                    logAndShow("Call Ended");
-                    AUDIO_ENABLED = false;
-                }
-
-                @Override
-                public void onGeneralCallError(NexmoAPIError apiError) {
-                    logAndShow(apiError.getMessage());
-                    AUDIO_ENABLED = false;
-                }
-
-                @Override
-                public void onAudioRouteChange(AppRTCAudioManager.AudioDevice device) {
-                    logAndShow("Audio Route changed");
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_AUDIO: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //TODO: implement
-                    toggleAudio();
-                    break;
-                } else {
-                    logAndShow("Enable audio permissions to continue");
-                    break;
-                }
-            }
-            default: {
-                logAndShow("Issue with onRequestPermissionsResult");
-                break;
-            }
-        }
-    }
 
 }

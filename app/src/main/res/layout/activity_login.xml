@@ -10,8 +10,7 @@
         android:layout_height="match_parent"
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:background="@drawable/logo">
+        android:paddingRight="24dp">
 
         <!-- Username Label -->
         <android.support.design.widget.TextInputLayout

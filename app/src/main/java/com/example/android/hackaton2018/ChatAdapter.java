@@ -21,6 +21,7 @@ import com.nexmo.sdk.conversation.client.Text;
 import com.nexmo.sdk.conversation.client.event.EventType;
 import com.nexmo.sdk.conversation.client.event.NexmoAPIError;
 import com.nexmo.sdk.conversation.client.event.RequestHandler;
+import com.nexmo.sdk.conversation.client.MemberMedia;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ChatAdapter.ViewHolder holder, int position) {
-        if (events.get(position).getType().equals(EventType.TEXT)) {
+        if (events.get(position).getType().equals(EventType.TEXT))
+        {
             final Text textMessage = (Text) events.get(position);
             if (!textMessage.getMember().equals(self) && !memberHasSeen(textMessage)) {
                 textMessage.markAsSeen(new RequestHandler<SeenReceipt>() {
@@ -69,6 +71,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.seenIcon.setVisibility(View.VISIBLE);
             }
         }
+
+        else if (events.get(position).getType().equals(EventType.MEMBER_MEDIA)) {
+            final MemberMedia mediaMessage = (MemberMedia) events.get(position);
+            holder.text.setText(mediaMessage.getMember().getName() + (mediaMessage.isAudioEnabled() ? " enabled" : " disabled") + " audio.");
+            holder.seenIcon.setVisibility(View.INVISIBLE);
+        }
+
+
     }
 
     private boolean memberHasSeen(Text textMessage) {

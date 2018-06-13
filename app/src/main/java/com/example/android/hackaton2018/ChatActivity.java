@@ -5,14 +5,17 @@ package com.example.android.hackaton2018;
  */
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import com.nexmo.sdk.conversation.client.SeenReceipt;
+import com.nexmo.sdk.conversation.client.event.container.Receipt;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,7 +24,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.nexmo.sdk.conversation.client.Conversation;
 import com.nexmo.sdk.conversation.client.ConversationClient;
@@ -53,6 +68,7 @@ public class ChatActivity extends AppCompatActivity {
     private ConversationClient conversationClient;
     private Conversation conversation;
     private SubscriptionList subscriptions = new SubscriptionList();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +144,35 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        conversation.typingEvent().add(new ResultListener<Member>() {
+            @Override
+            public void onSuccess(final Member member) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String typingMsg = member.getTypingIndicator().equals(Member.TYPING_INDICATOR.ON) ? member.getName() + " is typing" : null;
+                        typingNotificationTxt.setText(typingMsg);
+                    }
+                });
+            }
+        }).addTo(subscriptions);
+
+        conversation.seenEvent().add(new ResultListener<Receipt<SeenReceipt>>() {
+            @Override
+            public void onSuccess(Receipt<SeenReceipt> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        chatAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }).addTo(subscriptions);
     }
+
+
+
 
     private void sendTypeIndicator(Member.TYPING_INDICATOR typingIndicator) {
         switch (typingIndicator){
@@ -136,6 +180,9 @@ public class ChatActivity extends AppCompatActivity {
                 conversation.startTyping(new RequestHandler<Member.TYPING_INDICATOR>() {
                     @Override
                     public void onSuccess(Member.TYPING_INDICATOR typingIndicator) {
+                        //typingNotificationTxt.setVisibility(View.VISIBLE);
+
+
                         //intentionally left blank
                     }
 
@@ -150,7 +197,7 @@ public class ChatActivity extends AppCompatActivity {
                 conversation.stopTyping(new RequestHandler<Member.TYPING_INDICATOR>() {
                     @Override
                     public void onSuccess(Member.TYPING_INDICATOR typingIndicator) {
-                        //intentionally left blank
+                 //       typingNotificationTxt.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -225,6 +272,111 @@ public class ChatActivity extends AppCompatActivity {
             chatTxt.setText(prevText + "\n" + text.getText());
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.audio:
+                //TODO: implement
+                requestAudio();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void requestAudio() {
+        if (ContextCompat.checkSelfPermission(ChatActivity.this, RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            toggleAudio();
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, RECORD_AUDIO)) {
+                logAndShow("Need permissions granted for Audio to work");
+            } else {
+                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
+            }
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_AUDIO: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //TODO: implement
+                    toggleAudio();
+                    break;
+                } else {
+                    logAndShow("Enable audio permissions to continue");
+                    break;
+                }
+            }
+            default: {
+                logAndShow("Issue with onRequestPermissionsResult");
+                break;
+            }
+        }
+    }
+
+    private void toggleAudio() {
+        if(AUDIO_ENABLED) {
+           // conversation.audio().disable(new RequestHandler<Void>()
+            conversation.media(Conversation.MEDIA_TYPE.AUDIO).disable(new RequestHandler<Void>()
+            {
+                @Override
+                public void onError(NexmoAPIError apiError) {
+                    logAndShow(apiError.getMessage());
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+                    AUDIO_ENABLED = false;
+                    logAndShow("Audio is disabled");
+                }
+            });
+        } else {
+           // conversation.audio().enable(new AudioCallEventListener()
+            conversation.media(Conversation.MEDIA_TYPE.AUDIO).enable(new AudioCallEventListener()
+            {
+                @Override
+                public void onRinging() {
+                    logAndShow("Ringing");
+                }
+
+                @Override
+                public void onCallConnected() {
+                    logAndShow("Connected");
+                    AUDIO_ENABLED = true;
+                }
+
+                @Override
+                public void onCallEnded() {
+                    logAndShow("Call Ended");
+                    AUDIO_ENABLED = false;
+                }
+
+                @Override
+                public void onGeneralCallError(NexmoAPIError apiError) {
+                    logAndShow(apiError.getMessage());
+                    AUDIO_ENABLED = false;
+                }
+
+                @Override
+                public void onAudioRouteChange(AppRTCAudioManager.AudioDevice device) {
+                    logAndShow("Audio Route changed");
+                }
+            });
+        }
+    }
+
 
     private void logAndShow(final String message) {
         Log.d(TAG, message);

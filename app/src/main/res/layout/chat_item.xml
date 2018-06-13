@@ -23,6 +23,7 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_done_all_black_24dp"
         android:visibility="gone"/>
 
 </LinearLayout>

@@ -95,8 +95,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        attachListeners();
-       // addListener();
+        //attachListeners();
+       addListener();
     }
 
     private void attachListeners() {

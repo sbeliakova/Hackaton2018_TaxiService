@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private String CONVERSATION_ID = "CON-76f7d1da-d99c-41d2-b77b-2ace6230e20f";
     private String USER_JWT_FIRST_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg5MjIxNzMsImp0aSI6IjY5YzlmOGUwLTZmNDktMTFlOC1hY2ZjLTAxNzE0NDVlMGJkMSIsInN1YiI6InN2ZXRsYW5hIiwiZXhwIjoiMTUyOTAwODU3MiIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e30sIi92MS9kZXZpY2VzLyoqIjp7fSwiL3YxL2ltYWdlLyoqIjp7fSwiL3YzL21lZGlhLyoqIjp7fSwiL3YxL2FwcGxpY2F0aW9ucy8qKiI6e30sIi92MS9wdXNoLyoqIjp7fSwiL3YxL2tub2NraW5nLyoqIjp7fX19LCJhcHBsaWNhdGlvbl9pZCI6ImYyNDE4YmMyLWIzM2EtNGY0Mi04OGEyLTg4NTk4NTc2OGExMCJ9.puCihz5_7wnWfsZhy1B3zSOtnZ-V081VR6i0j8fzKd0mBGOV2uvUm5jRe14nyb_x9IAiRKq9_O9gl7HdJyUbldFHWZ989saeRS6MQcpbtEeo7nKfmSVmBlQC4SbcJuV6JHYj-waJqPuUBDXJsxzRNBQqaKPlwwlktKpRR_k9a-zJbeI-4e2WJFT07AgwmRJcmCNLvYYP6LlSLsO-s0WFZqRj0lrq5CG39eLT9jsylo70t888CQyXyAYSjnPdvRWAKIOFU2rrXBH8to0NYGcWx3VVvO4ReRErQc21x8SOomF9BLvz1fhX8bNwpCXHzYqbKjoodF-T9522DhudiP9inQ";
     private String USER_JWT_SECOND_USER = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Mjg5MjIyMDEsImp0aSI6IjdhNTM1ZWUwLTZmNDktMTFlOC05YzdjLTU3NzcyNTBhOTk2YyIsInN1YiI6ImphbWllIiwiZXhwIjoiMTUyOTAwODYwMCIsImFjbCI6eyJwYXRocyI6eyIvdjEvc2Vzc2lvbnMvKioiOnt9LCIvdjEvdXNlcnMvKioiOnt9LCIvdjEvY29udmVyc2F0aW9ucy8qKiI6e30sIi92MS9kZXZpY2VzLyoqIjp7fSwiL3YxL2ltYWdlLyoqIjp7fSwiL3YzL21lZGlhLyoqIjp7fSwiL3YxL2FwcGxpY2F0aW9ucy8qKiI6e30sIi92MS9wdXNoLyoqIjp7fSwiL3YxL2tub2NraW5nLyoqIjp7fX19LCJhcHBsaWNhdGlvbl9pZCI6ImYyNDE4YmMyLWIzM2EtNGY0Mi04OGEyLTg4NTk4NTc2OGExMCJ9.tRiUKMho2Ttg90NJVmYDH243c2vvqgzkecU3kC-Wu9CAVXTH3PS4lXOkaDq3Gx6X8Noqb_yOSocuZGV6vVPWU-NGpgWnpwLa_NztWx-ZGxSNKm7sEori81YVmuF_5mwCfAb50pvAM2JB4QmU4XryiQIs4lKRSqjo0Yq1cfrzeuFQkdJg94SN19gQthSGy52hyslTJ3PMF0hDjjvOXjMPHDea-FiiSD-oWaGjjgcuy7bxPSJikJTiMx_uL8MnfMiRPzDiOo2ROzhNcgzkywW734Q_d5X7uZqC6hcZ9cby_wrFOMD-8lYgKOx7njGVs4WIxmzTmVRFQHU5zlO_tHAIsA";
-    private String SUPPORT_PSTN = "79091659491";
+    private String SUPPORT_PSTN = "447933037519";
 
     private ConversationClient conversationClient;
     private String username;
@@ -90,8 +90,8 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(new ContextThemeWrapper(LoginActivity.this, android.R.style.Theme_Holo_Light_Dialog));
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        System.out.println("authentificating");
+        progressDialog.setMessage("Connecting...");
+        System.out.println("connecting");
         progressDialog.getWindow().setGravity(Gravity.CENTER);
         progressDialog.show();
         System.out.println("loginAsUser starting...");
@@ -114,9 +114,10 @@ public class LoginActivity extends AppCompatActivity {
                     List<Conversation> conversationList = conversationClient.getConversationList();
                     System.out.println("conversationList: " + conversationList.toString());
                     if (conversationList.size() > 0) {
-                        progressDialog.dismiss();
                         System.out.println("conv list size: " + conversationList.size());
-                        showConversationList(conversationList);
+                        //showConversationList(conversationList);
+                        goToConversation(conversationList.get(0));
+                        progressDialog.dismiss();
                     } else {
                         logAndShow("You are not a member of any conversations");
                     }
@@ -161,12 +162,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this)
-                .setTitle("Choose a conversation")
+                .setTitle("Do you want to contact the driver?")
+
                 .setItems(conversationNames.toArray(new CharSequence[conversationNames.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         goToConversation(conversationList.get(which));
-
                         dialog.dismiss();
                     }
                 });
@@ -181,10 +182,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToConversation(final Conversation conversation) {
         System.out.println("conversation " + conversation.getEvents().toString());
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        conversation.sendText("logged in, current time is: " + sdf.format(cal.getTime()),
-                new RequestHandler<Event>() {
+        conversation.sendText("logged in", new RequestHandler<Event>() {
             @Override
             public void onError(NexmoAPIError apiError) {
                 logAndShow("Error going to the Conversation: " + apiError.getMessage());

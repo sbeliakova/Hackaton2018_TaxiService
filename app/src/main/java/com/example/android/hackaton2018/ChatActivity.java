@@ -4,9 +4,12 @@ package com.example.android.hackaton2018;
  * Created by sbeliakova on 12/06/2018.
  */
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 import com.nexmo.sdk.conversation.client.Call;
+import com.nexmo.sdk.conversation.client.Image;
 import com.nexmo.sdk.conversation.client.SeenReceipt;
 import com.nexmo.sdk.conversation.client.event.container.Receipt;
 import android.text.Editable;
@@ -282,10 +286,28 @@ public class ChatActivity extends AppCompatActivity {
                 callPhone();
                 System.out.println("callPhone function called");
                 return true;
+            case R.id.image:
+                System.out.println("sending Image");
+               // sendImage();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+//
+//    private void sendImage() {
+//
+//
+//        conversation.sendImage("imagePath", new ImageSendListener() {
+//            @Override
+//            public void onSuccess(Event image) {
+//            }
+//
+//            @Override
+//            public void onError(NexmoAPIError error) {
+//            }
+//        });
+//    }
 
     private void callPhone() {
         System.out.println("callPhone");
@@ -296,7 +318,19 @@ public class ChatActivity extends AppCompatActivity {
                 System.out.println("callPhone OnSuccess");
                 currentCall = result;
                 System.out.println("currentCall: " + currentCall.toString());
-
+                System.out.println("opening a dialog window");
+                final AlertDialog dialogPSTN = new AlertDialog.Builder(ChatActivity.this).create();
+                dialogPSTN.setTitle("Call with Support");
+                dialogPSTN.setIcon(R.drawable.ic_twotone_call_end_24px);
+//                dialogPSTN.setButton(AlertDialog.BUTTON_NEUTRAL, "Disconnect the call",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialogInterface, int which) {
+//                                endCall();
+//                                dialogPSTN.dismiss();
+//                            }
+//                        });
+                dialogPSTN.show();
+                System.out.println("switch");
                 switch (result.getCallState()) {
                     case STARTED:
                         logAndShow("PSTN call started");
@@ -306,7 +340,6 @@ public class ChatActivity extends AppCompatActivity {
                         logAndShow("PSTN call answered");
                     default:
                         logAndShow("Error attaching call listener");
-                        break;
                 }
             }
 
@@ -317,6 +350,20 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void endCall() {
+        currentCall.hangup(new RequestHandler<Void>() {
+            @Override
+            public void onError(NexmoAPIError apiError) {
+                logAndShow("Cannot hangup: " + apiError.toString());
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+                logAndShow("Call completed.");
+            }
+        });
     }
 
     private void requestAudio() {
@@ -382,6 +429,19 @@ public class ChatActivity extends AppCompatActivity {
                 public void onCallConnected() {
                     logAndShow("Connected");
                     AUDIO_ENABLED = true;
+                    final AlertDialog dialog = new AlertDialog.Builder(ChatActivity.this).create();
+                    dialog.setTitle("Call");
+                    dialog.setIcon(R.drawable.ic_twotone_call_end_24px);
+                    dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Disconnect the call",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                  //  onCallEnded();
+                                    requestAudio();
+
+                                    dialog.dismiss();
+                                }
+                            });
+                    dialog.show();
                 }
 
                 @Override
@@ -403,6 +463,7 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
     }
+
 
 
     private void logAndShow(final String message) {

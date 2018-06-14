@@ -2,12 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/audio"
-        android:title="Audio"
+        android:title="Call the driver"
         android:icon="@drawable/ic_twotone_call_24px"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/image"
+        android:title="Send an image"
+        android:icon="@drawable/ic_icons8_picture"
+        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/outbound_pstn"
-        android:title="OutboundPSTN"
+        android:title="Support"
         android:icon="@drawable/ic_twotone_person_pin_24px"
         app:showAsAction="ifRoom"/>
 
